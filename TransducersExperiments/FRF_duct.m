@@ -180,9 +180,9 @@ plot(fv/1000,20*log10(abs(PV_SEM(:,3))),'r','MarkerSize',8,'LineWidth',1)
 hold on
 plot(fv/1000,20*log10(abs(PA_SEM(:,3))),'k','MarkerSize',8,'LineWidth',1)
 if boundary==0
-    plot(fv/1000,80+20*log10(abs(FRF_speakerO)),'g')
+    plot(fv/1000,79.1+20*log10(abs(FRF_speakerO)),'g')
 elseif boundary==1
-    plot(x(ind1x:ind2x)/1000,80+20*log10(abs(FRF_speakerC)),'g')
+    plot(x(ind1x:ind2x)/1000,79.1+20*log10(abs(FRF_speakerC)),'g')
 end
 %plot(fv/1000,20*log10(abs(T1_A)),'*k')
 %plot(fv/1000,20*log10(abs(T1_V)),'*r')
