@@ -63,8 +63,7 @@ kDg=zeros(1,N);
     B=rho*c^2;
     % viscous damping
     if dmodel == 'v'
-        s=tf('s');
-        H_p=H_pa/s;
+        % dynamic stiffness matrices in presure by volume acceleration
         k_local=sqrt((w^2*rho - 1i*w*eta)/B);
     
         k11=1+exp(-2*1i*k_local*L1);
@@ -72,7 +71,7 @@ kDg=zeros(1,N);
             k21=k12;
             k22=k11;
         Kd1=[ k11   k12
-                   k21   k22 ].*(A1/(rho*c*(1-exp(-2*1i*k_local*L1))));
+                   k21   k22 ].*(1i*w*A1/(rho*c*(1-exp(-2*1i*k_local*L1))));
     
         k11=1+exp(-2*1i*k_local*L2);
             k12= -2*exp(-1i*k_local*L2);
@@ -80,10 +79,9 @@ kDg=zeros(1,N);
             k22=k11;
     
         Kd2=[ k11   k12
-                  k21   k22 ].*(A2/(rho*c*(1-exp(-2*1i*k_local*L2))));
+                  k21   k22 ].*(1i*w*A2/(rho*c*(1-exp(-2*1i*k_local*L2))));
     % structural damping (histeresis)
     elseif dmodel == 's'  || dmodel == 'n'
-        H_p=H_pa;
         k_local= w/c;
         k_local=k_local*(1-1i*eta/2);
         % acceleration
@@ -113,7 +111,7 @@ kDg=zeros(1,N);
      % auxiliary variables
      C1=Kd1(2,2)+Kd2(1,1);
     %% adding feedback law
-    gain=evalfr(H_p,1i*w);
+    gain=evalfr(H_pa,1i*w);
     if ideal_filter == 1
         fase=0;
         gain=gain*function_idealfilter(w,2*pi*0.5e3,2*pi*2e3,fase);
@@ -152,8 +150,6 @@ kDg=zeros(1,N);
     end
 %% solve the linear system
     u(:,n)= Dgn\F;
-    % PS: integrate F if the external load is given in volume
-    % acceleration
     u_a(:,n)= 1i*w*Dgn\F;
     kDg(n) =cond(Dgn);
     u_passive(:,n) = Dgn_p\F;

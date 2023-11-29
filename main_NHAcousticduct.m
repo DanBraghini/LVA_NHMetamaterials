@@ -8,7 +8,7 @@ global dmodel rho L1 L2 Lc A1 A2 c eta gamma_c H_pa kp ki kii kd kdd ideal_filte
 %feedback = input('enter the type of feddback\n(string): 
 feedback=1;%PC properties
 if feedback==1
-    kp=-1.5e-3;ki=0;kd=0;kdd=0;kii=0;
+    kp=1.5e-2;ki=0;kd=0;kdd=0;kii=0;
 elseif feedback==2
      kp=0;ki=1.5;kd=0;kdd=0;kii=0;
 elseif feedback==3
@@ -20,7 +20,7 @@ elseif feedback==5
 end
 %dmodel = input('enter the selected damping model
 %\n(v = viscous, s = structural, n= none)')
-dmodel='n';
+dmodel='v';
 ideal_filter=0;
 % Laplace variable
 s=tf('s');
@@ -61,7 +61,7 @@ colors=0;
 %            boundary == 2 : periodic(infinity system)
 boundary=0;
 % number of cells on the finite structure
-ncell=2*18;
+ncell=18;
 %FEM
 %ne_cell=25*3;
 ne_cell=3*3;
@@ -73,12 +73,12 @@ e='m';
 % unfolded plot of the dispersion diagrams w(k) imposing real k (traveling waves)
 unfoldedDD=1;
 % Bulk-Boundary correspondence or metamaterial(PBC)-metastructure(OBC) correspondence
-bulkboundary=0;
+bulkboundary=1;
 % Forced frequency response for metastructure(OBC)
 FRF=1;
 % Transient response of the metastructure due to tone-burst kind input on
 % the middle
-transient=1;
+transient=0;
 % Eigenmodes simulation of the free wave modes
 eigenmodes=0;
 %% Numerical models
@@ -207,7 +207,7 @@ if bulkboundary == 1 || transient == 1 || eigenmodes == 1
     end
     %% verify internal stability of closed loop system
     if  norm(gamma_c,1)~=0
-        [V, Lambda] = eig(Ass_cl);
+        [V, Lambda] = eigs(Ass_cl,nx_cl);
     else
         [V, Lambda] = eig(Ass);
     end
@@ -277,7 +277,7 @@ if bulkboundary==1 || eigenmodes==1
     scatter(imag(wn/2/pi/1000),real(wn/2/pi/1000),'k')
     ylim([0 flim/1000])
   %   xlim([-0.3 0.3]);
-   xlim([-2e-2 2e-2]);
+  % xlim([-2e-2 2e-2]);
 %        ylabel('$\Re(f)$ [kHz]', 'interpreter', 'latex', 'fontsize', 15)
 %      xlabel('$\Im(f)$ [kHz]', 'interpreter', 'latex', 'fontsize', 15)
 %     set(gca,'TickLabelInterpreter','Latex','fontsize',15);

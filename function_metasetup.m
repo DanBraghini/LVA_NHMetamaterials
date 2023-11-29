@@ -13,9 +13,9 @@ end
 global dmodel rho L1 L2 Lc A1 A2 c eta gamma_c H_pa kp ki kii kd kdd Nd
 %% acoustic metamaterial set up
 if dmodel == 's'
-    eta=0.001;
+    eta=0.005;
 elseif dmodel == 'v'
-   eta= 100;
+   eta= 100/2;
 elseif dmodel == 'n'
     eta=1e-8;
 end
@@ -84,9 +84,9 @@ end
     H_pa=H_pa.*Hf;
     %% Transducers: 
     % T1 = sensor, T2 = actuator
-    T1 = function_getMicTransd;
-    T2 =  function_getLoudSpeakerTransd;
-    %T1=1;T2=1;
+%    T1 = function_getMicTransd;
+  %  T2 =  function_getLoudSpeakerTransd;
+    T1=1;T2=1;
     H_pa=T2.*H_pa;
     H_pa=H_pa.*T1;
     %% electric gains
