@@ -10,7 +10,7 @@
 % kL: value of wavenumber times length. kL \in  [-pb*pi, pb*pi] \subset \R;
 % c: sound velocity within the dute (incompressible and perfect/ideal gas model for air);
 clear all
-close all
+%close all
 clc
 [w_1,FRF_1]=readuff('HspeakerOpen.uff');
 %[~,FRF_2]=readuff('HspeakerClosed.uff');
@@ -35,7 +35,7 @@ FRF_micC=FRF_4(ind1:ind2);
 ncell=1;
 %boundary==0: open-open
 %boundary==1: opren-closed
-boundary=1;
+boundary=0;
 %% acoustic metamaterial set up
 dmodel='v';
 if dmodel == 'v'
@@ -76,16 +76,10 @@ B=rho*c^2;
 %% Assemblyng dynamic stiffness matrix and solving u(\omega)   
  %% define where the external load is applied
 % force on the left end    
-if boundary==0
-        F = [1; zeros(ndof-2,1)];
-        PV_SEM=zeros(N,ndof-1);PA_SEM=PV_SEM;
- elseif boundary==1
-       F = [1; zeros(ndof-1,1)];
-       PV_SEM=zeros(N,ndof);PA_SEM=PV_SEM;
- end
+PV_SEM=zeros(N,ndof);PA_SEM=PV_SEM;
 % This loop runs through the frequency vector
  for n=1:N 
-   Dgn=zeros(ndof,ndof);
+            Dgn=zeros(ndof,ndof);
     w=wv(n);
     %% select the damping model
     % viscous damping
