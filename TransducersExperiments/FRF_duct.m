@@ -35,7 +35,7 @@ FRF_micC=FRF_4(ind1:ind2);
 ncell=1;
 %boundary==0: open-open
 %boundary==1: opren-closed
-boundary=1;
+boundary=0;
 %% acoustic metamaterial set up
 dmodel='v';
 if dmodel == 'v'
