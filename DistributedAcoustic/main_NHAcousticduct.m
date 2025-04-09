@@ -1,74 +1,152 @@
 % Created on : 27/09/2021 by Danilo Braghini
-%% clear 
-clear all 
-%close all 
-clc 
+%% clear data and close figures
+clear all; close all; clc; 
 %% Macros
 global dmodel rho L1 L2 Lc A1 A2 c eta gamma_c H_pa kp ki kii kd kdd ideal_filter kL Nd
-%feedback = input('enter the type of feddback\n(string): 
-feedback=1;%PC properties
-if feedback==1
-    kp=1.5e-2;ki=0;kd=0;kdd=0;kii=0;
-elseif feedback==2
-     kp=0;ki=1.5;kd=0;kdd=0;kii=0;
-elseif feedback==3
-     kp=0;ki=0;kd=1e-5;kdd=0;kii=0;
-elseif feedback==4
-     kp=0;ki=0;kd=0;kdd=5e-10;kii=0;
-elseif feedback==5
-     kp=0;ki=0;kd=0;kdd=0;kii=1.5;
+
+
+
+%% Feedback types
+
+
+%feedback = input(['Enter the type of feddback\n(string): \n', ...
+%'1: Proportional gain\n', ...
+%'2: Integrative gain\n', ...
+%'3: Derivative gain\n', ...
+%'4: Second derivative gain\n', ...
+%'5: Double integrative gain\n']);
+
+
+% NOTE: Feedback gain type:
+% INFO: feedback = 1 : Only proportional gain;
+% INFO: feedback = 2 : Only integrative gain;
+% INFO: feedback = 3 : Only derivative gain;
+% INFO: feedback = 4 : Only second derivative gain;
+% INFO: feedback = 5 : Only double integrative gain;
+feedback = 1;
+
+fprintf('Feedback type inserted: %d\n',feedback);
+
+
+
+switch feedback
+    case 1
+        kp =1.5e-2;ki=0;kd=0;kdd=0;kii=0;
+    case 2
+        kp =0;ki=1.5;kd=0;kdd=0;kii=0;
+    case 3
+        kp =0;ki=0;kd=1e-5;kdd=0;kii=0;
+    case 4
+        kp =0;ki=0;kd=0;kdd=5e-10;kii=0;
+    case 5
+        kp =0;ki=0;kd=0;kdd=0;kii=1.5;
+    otherwise
+        error('Feedback type not defined')
 end
+
+fprintf('Proportional gain: %d; \n integrative gain: %d; \n derivative gain: %d; \n second derivative gain: %d; \n double integrative gain: %d;\n',kp,ki,kd,kdd,kii);
+
+
+
+%% Model parameters
 %dmodel = input('enter the selected damping model
 %\n(v = viscous, s = structural, n= none)')
-dmodel='v';
-ideal_filter=0;
-% Laplace variable
+
+% NOTE: Damping model: v = viscous, s = structural, n= none
+dmodel='v'; 
+
+% NOTE: Ideal filter: 0 = no filter, 1 = ideal filter
+ideal_filter=0; 
+
+
+% NOTE: Laplace variable
 s=tf('s');
-% angular frequency vector
+
+% NOTE: Max frequency in Hz
 flim=1.5e3;%in kHz
-% parameter used for time derivative aproximation
+
+% NOTE: Parameter used for time derivative aproximation
 Nd=100*2*pi*flim;
 %Nd=100*2*pi*1.5;
+
+% NOTE: Angular frequency vector in rad/s
 wv=2*pi*(2:1:flim);
 %wv=2*pi*(-flim:2:flim);
+
+%NOTE: Frequency vector in Hz
 fv=wv/2/pi;
+
+% NOTE: pb =input('Enter the number of pass bands / bulk bands\n(any integer number between 1 and 10)')
 % pb =input('enter the number of pass bands / bulk bands\n(any integer number between 1 and 10)')
 pb=4;
-% a=coupling range (# of cells)
+
+% NOTE: Coupling range: number of cells between the receive signal cell and the respective active cell)
+% a=input(Enter the coupling range: \n (Any number beetween 0 and total number of cells - 1, 17 in this case)\n); 
 a=0;
-% filter = 0 : no filter
-% filter = 1 : butterworth filter
-% filter = 2 : RC filter
-% filter = 3 : filter built for the experiment
+
+% NOTE: Filter model
+% INFO: filter = 0 : no filter
+% INFO: filter = 1 : butterworth filter
+% INFO: filter = 2 : RC filter
+% INFO: filter = 3 : filter built for the experiment
 filter=0;
 filterinfo.w1=1000*2*pi;
 filterinfo.w2=1500*2*pi;
-%lp= 'low pass', bp = 'band pass', 'hp' ='high pass'
+
+% NOTE: Types of filter
+% INFO: filterinfo.type = 'lp' = 'low pass', 
+% INFO: filterinfo.type = 'bp' = 'band pass', 
+% INFO: filterinfo.type = 'hp' ='high pass'
 filterinfo.type='hp';
-plotfilter=0;
+
+% NOTE: Plot filter response: 0 = no plot, 1 = plot
+plotfilter=0; 
+
+fprintf('Model and signal parameters loaded\n');
+
+
+%% Structure Construction
 function_metasetup(filter,plotfilter,filterinfo);
-% labelplot(1): wavenumber x real frequency
-% labelplot(2): wavenumber x imaginary frequency
-% labelplot(3): complex frequency plane
-% labelplot(4): 3D plot
-labelplot=[0 0 0 1];
-periodic=0;
-plotpassive=0;
+
+fprintf('Structure parameters loaded\n');
+
+
+% NOTE: Plot options
+% INFO: labelplot(1): wavenumber x real frequency
+% INFO: labelplot(2): wavenumber x imaginary frequency
+% INFO: labelplot(3): complex frequency plane
+% INFO: labelplot(4): 3D plot
+labelplot=[1 1 1 0];
+
+periodic=0; % Plot Periodic 
+
+% NOTE: Plot passive system: 0 = no plot, 1 = plot
+plotpassive=0; 
+
+
+
 colors=0;
-%Boundary conditions of the finite structure:
-%            boundary == 0 : clamped-clamped (default)/ Neumann
-%            boundary == 1 : open-open/ Dirichlet
-%            boundary == 2 : periodic(infinity system)
+
+% NOTE: Boundary conditions of the finite structure:
+% INFO: boundary == 0 : clamped-clamped (default)/ Neumann
+% INFO: boundary == 1 : open-open/ Dirichlet
+% INFO: boundary == 2 : periodic(infinity system)
 boundary=0;
-% number of cells on the finite structure
+
+% NOTE: Number of cells on the finite structure
 ncell=18;
-%FEM
+
+%NOTE: Total of finite elements per cell
 %ne_cell=25*3;
-ne_cell=3*3;
+ne_cell=10*3;
+
+
 xs = Lc/4;
 xi = xs+Lc/2;
 % excitation point for zero-state response
 e='m';
+
+fprintf('Metastructure builted');
 %% choose function
 % unfolded plot of the dispersion diagrams w(k) imposing real k (traveling waves)
 unfoldedDD=1;
