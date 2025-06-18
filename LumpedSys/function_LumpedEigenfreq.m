@@ -1,4 +1,4 @@
-function output= function_LumpedEigenfreq(ncell,m1,m2,k,eta,flim,boundary,e,gamma_c,theta,phi)
+function output= function_LumpedEigenfreq(ncell,m1,m2,k,eta,flim,boundary,e,gamma_c,theta,phi,r,derivative)
 s=tf('s');   
 %% FEM
     output0 = function_buildFEM_xl(m1,m2,k, eta ,ncell,flim,'boundary',boundary);
@@ -7,7 +7,7 @@ s=tf('s');
     output.x=output0.x;output.ndof=output0.ndof;%% State Space of interconnection (S,H) 
     %% S
     % number of inputs=outputs
-    output0=function_buildSS_xl(Ms,Cs,Ks,e);
+    output0=function_buildSS_xl(Ms,Cs,Ks,e,r,derivative);
     Ass=output0.Ass;nx=size(Ass,1);
     % PS: (Ms,Cs,Ks) were previously multiplied by B*rho,
     % so we need to multiply matrixes F (inside B1ss) and T(inside B2ss) also 
@@ -76,5 +76,5 @@ s=tf('s');
     end
     output.Lambda = diag(Lambda);
     output.Vn = Css*V;
-    output.wn = -1i*Lambda;
+    output.wn = -1i*output.Lambda;
  end

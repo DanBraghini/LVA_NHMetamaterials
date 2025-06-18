@@ -16,7 +16,7 @@ s=tf('s');
 %derivative=1: velocity static feedback
 %derivative=2: acceleration static feedback
 %derivative=1.1: position and velocity static feedback
-derivative=2;
+derivative=0;
 eigenmodes=1;
 performance=0;
 stability=0;
@@ -29,7 +29,7 @@ k=10; m1=1; m2=1;wn=sqrt(k/m1);
 %g =[-100:1:-10 -9.9:0.1:0];
 %g=[-20:1:-1 -0.9:0.1:0.9 1:20];
 %g=-100:.1:100;gplot=-1*k
-g=.1;
+g=-1;
 gplot=g;gn=g/k;
 %g=-11;
 %g=[-1:.001:1];
@@ -37,10 +37,10 @@ gplot=g;gn=g/k;
 % g=[-1000:10:-110 -100:1:-10 -9.99:0.01:0];
 %g =-1.*[-1:1e-4:0];
 %g=-100:1:10;
-r=0;
+r=2;
 b=0;%0.01;
 e='m';
-ndof=99;%9;
+ndof=97;%9;
 % angular frequency vector limit
 flim=3.5e0;
 %flim=10*flim;
@@ -313,16 +313,18 @@ if eigenmodes==1
         figure
         y=abs(mode).*sin(angle(mode));
         %y=imag(mode);
-        plot(xd,y'/norm,'.-k','LineWidth',1)
+         scatter(xd,y'/norm)
     %    y=[y;y];
     %    plot(x(1:end-1),y'/norm)
-        axis([min(xd),max(xd), -1,1]);
-        xlabel('$n$', 'interpreter', 'latex')
-        ylabel('$ \hat{u}$', 'interpreter', 'latex')     
-        set(gca,'TickLabelInterpreter','Latex','fontsize',20);
-        box on
-        set(gcf, 'Color', 'w');
-        legend(['\Omega_n = ' num2str(fn,'%0.3f') ]);
+  axis([min(xd),max(xd), -1,1]);
+            xlabel('$n$', 'interpreter', 'latex', 'fontsize', 20)
+            ylabel('$ \hat{q}(\Omega_n) $', 'interpreter', 'latex', 'fontsize', 20)     
+            set(gca,'TickLabelInterpreter','Latex','fontsize',20);
+            box on
+            set(gcf, 'Color', 'w');
+            legend(['\Omega_n = ' num2str(fn,'%0.3f') 'rad/s']);
+            drawnow
+           set(gca,'TickLabelInterpreter','Latex','fontsize',20);
 end
 %%
 figure

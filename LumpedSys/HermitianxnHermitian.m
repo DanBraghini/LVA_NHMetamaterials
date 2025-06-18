@@ -84,8 +84,8 @@ figure
     plot(real(Omega_r_damp(2,:)),imag(Omega_r_damp(2,:)),'k','LineWidth',2)
     plot(real(Omega_r_passive(1,:)),imag(Omega_r_passive(1,:)),'ok','LineWidth',2)
     plot(real(Omega_r_passive(2,:)),imag(Omega_r_passive(2,:)),'ok','LineWidth',2)
-    xlabel('$\omega_R$','interpreter', 'latex', 'fontsize', 20)
-    ylabel('$\omega_I$','interpreter', 'latex', 'fontsize', 20)
+    xlabel('$\Omega_R$','interpreter', 'latex', 'fontsize', 20)
+    ylabel('$\Omega_I$','interpreter', 'latex', 'fontsize', 20)
     box on
     grid on
     set(gcf, 'Color', 'w');
