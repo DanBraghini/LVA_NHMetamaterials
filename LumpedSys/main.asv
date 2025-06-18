@@ -39,6 +39,7 @@ fv=wv/2/pi;
 
 %% periodic (infinity) system with one mass on the unit cell
 if dispersion==1 || bulkboundary==1 || eigenmode==1
+    gp=0;
     muvec=pi*linspace(-1,1,701);
     omega_a1=zeros(size(muvec));omega_a2=omega_a1;
     for i=1:701
@@ -59,11 +60,11 @@ if dispersion==1 || bulkboundary==1 || eigenmode==1
      wn=sqrt(k/m1);
      Omega_r=omega_r/wn;
      omega_a1=omega_a1/wn;
-     omega_a2=omega_a2/wn
+     omega_a2=omega_a2/wn;
 %%
     %Omega=omega_a1./wn;
-    
-    figure
+    hold ond
+    %figure
    % plot3(real(omega_r(1,:)),imag(omega_r(1,:)),muvec,'r','LineWidth',1.5)
     plot3(real(Omega_r(2,:)),imag(Omega_r(2,:)),muvec/pi,'r','LineWidth',1.5)
        hold on
@@ -119,8 +120,8 @@ if bulkboundary==1 || eigenmode==1 || Bode==1
     %[x,~,so_,Vn,sys_wz,nx_cl] = function_LumpedEigenfreq(ndof,m1,m2,k,eta,flim,boundary,e,gamma_c,theta,phi);
     %% Solving the eigenproblem under PBC
     output = function_LumpedEigenfreq(100,m1,m2,k,b,flim,2,e,gamma_c,theta,phi);
-    so_wabc=output.wn;Vn_wabc=output.Vn;sys_wx_wabc=output.sys_wz;nx_cl_wabc=output.nx_cl;ndof_wabc=output.ndof;x_wabc=output.x;
-    [so_wabc,ind] = sort(so_wabc,'ComparisonMethod','real');
+    omegan_wabc=output.wn;Vn_wabc=output.Vn;sys_wx_wabc=output.sys_wz;nx_cl_wabc=output.nx_cl;ndof_wabc=output.ndof;x_wabc=output.x;
+    [Omegan_wabc,ind] = sort(omegan_wabc/wn,'ComparisonMethod','real');
     Vn_wabc = Vn_wabc(:,ind); 
        % solving the eigenproblem for the passive structure
 %     gamma_c=[0*gp 0*gi 0*gd];
@@ -259,7 +260,7 @@ omega_n=so.*1i;
 [omega_n,ind]=sort(omega_n/wn,'ComparisonMethod','real');
 Vn = Vn(:,ind); 
 omega_npassive=so_passive.*1i;
-[omega_npassive,ind]=sort(omega_npassive,'ComparisonMethod','real');
+[omega_npassive,ind]=sort(omega_npassive/wn,'ComparisonMethod','real');
 Vn_passive=Vn_passive(:,ind);
 %[V,L]=eig(Ks,-Ms);
 %so_h=[sqrt(diag(L));-sqrt(diag(L))];
@@ -340,19 +341,19 @@ if FRF3D==1
 end
 if dispersion==1 && eigenmode==1
     figure(7)
-    scatter(real(omega_n),imag(omega_n),'kx','LineWidth',1.5)
+    scatter(imag(omega_n),real(omega_n),'ko','LineWidth',1.5)
     hold on
-   plot(real(omega_a1),imag(omega_a1),'r','LineWidth',1.5)
-    plot(real(omega_a2),imag(omega_a2),'r','LineWidth',1.5)
+   plot(imag(omega_a1),real(omega_a1),'r','LineWidth',1.5)
+    plot(imag(omega_a2),real(omega_a2),'r','LineWidth',1.5)
 
   %  scatter(real(so_h),imag(so_h),'bx','LineWidth',1.5)
    %scatter(real(so_wabc),imag(so_wabc),'ro')
-    scatter(real(omega_npassive),imag(omega_npassive),'bx','LineWidth',1.5)
-    xlim([0 10])
+    scatter(imag(omega_npassive),real(omega_npassive),'bo','LineWidth',1.5)
+    ylim([0 3])
     grid on
     %title('Eigenvalues', 'interpreter', 'latex', 'fontsize', 15)
-    xlabel('$\Omega_r$', 'interpreter', 'latex', 'fontsize', 15)
-    ylabel('$\Omega_i$', 'interpreter', 'latex', 'fontsize', 15')
+    ylabel('$\Omega_R$', 'interpreter', 'latex', 'fontsize', 15)
+    xlabel('$\Omega_I$', 'interpreter', 'latex', 'fontsize', 15')
     set(gcf, 'Color', 'w');
     set(gca,'TickLabelInterpreter','Latex','fontsize',20);
     box on
@@ -414,7 +415,7 @@ if eigenmode==1
         %modo=sin(x)+1j*cos(x)/2;
         mode=Vn(:,ind);
         %wn=-1i*so(end);
-        norm = max(abs(mode));
+        normm = max(abs(mode));
         % numero de frames
         Nf=100;
         % numero de ciclos
@@ -425,7 +426,7 @@ if eigenmode==1
         % x = [x x(l).*ones(1,l-1)+x(2:l)];
         for i=1:Nf
             y=abs(mode).*cos(angle(mode)+teta(i));
-            scatter(x(1:ndof_n),y'/norm)
+            scatter(x(1:ndof_n),y'/normm)
         %    y=[y;y];
         %    plot(x(1:end-1),y'/norm)
             axis([min(x),max(x), -1,1]);

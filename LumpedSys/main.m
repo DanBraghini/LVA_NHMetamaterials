@@ -80,12 +80,12 @@ if dispersion==1 || bulkboundary==1 || eigenmode==1
     plot(muvec/pi,real(Omega_r(2,:)),'r','LineWidth',1.5)
     %hold on
    %plot(real(omega_a2),muvec,'r','LineWidth',1.5)
-    ylabel('$\Omega_R$','interpreter', 'latex', 'fontsize', 15)
-    xlabel('$\mu/\pi$','interpreter', 'latex', 'fontsize', 15)
+    ylabel('$\Omega_R$','interpreter', 'latex', 'fontsize', 20)
+    xlabel('$\mu/\pi$','interpreter', 'latex', 'fontsize', 20)
     box on
     grid on
     set(gcf, 'Color', 'w');
-    set(gca,'TickLabelInterpreter','Latex','fontsize',20);
+    set(gca,'TickLabelInterpreter','Latex','fontsize',20;
 
     figure
     plot(muvec/pi,imag(Omega_r(2,:)),'r','LineWidth',1.5)
